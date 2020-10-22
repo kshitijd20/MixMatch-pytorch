@@ -27,19 +27,20 @@ def get_cifar10(root, n_labeled,
 
     print (f"#Labeled: {len(train_labeled_idxs)} #Unlabeled: {len(train_unlabeled_idxs)} #Val: {len(val_idxs)}")
     return train_labeled_dataset, train_unlabeled_dataset, val_dataset, test_dataset
-    
+
 
 def train_val_split(labels, n_labeled_per_class):
     labels = np.array(labels)
     train_labeled_idxs = []
     train_unlabeled_idxs = []
     val_idxs = []
-
+    max_examples_per_class = 500
     for i in range(10):
         idxs = np.where(labels == i)[0]
+        print("length of data is ",len(idxs))
         np.random.shuffle(idxs)
         train_labeled_idxs.extend(idxs[:n_labeled_per_class])
-        train_unlabeled_idxs.extend(idxs[n_labeled_per_class:-500])
+        train_unlabeled_idxs.extend(idxs[n_labeled_per_class:max_examples_per_class])
         val_idxs.extend(idxs[-500:])
     np.random.shuffle(train_labeled_idxs)
     np.random.shuffle(train_unlabeled_idxs)
@@ -57,7 +58,7 @@ def normalise(x, mean=cifar10_mean, std=cifar10_std):
     return x
 
 def transpose(x, source='NHWC', target='NCHW'):
-    return x.transpose([source.index(d) for d in target]) 
+    return x.transpose([source.index(d) for d in target])
 
 def pad(x, border=4):
     return np.pad(x, [(0, 0), (border, border), (border, border)], mode='reflect')
@@ -145,7 +146,7 @@ class CIFAR10_labeled(torchvision.datasets.CIFAR10):
             target = self.target_transform(target)
 
         return img, target
-    
+
 
 class CIFAR10_unlabeled(CIFAR10_labeled):
 
@@ -156,4 +157,3 @@ class CIFAR10_unlabeled(CIFAR10_labeled):
                  transform=transform, target_transform=target_transform,
                  download=download)
         self.targets = np.array([-1 for i in range(len(self.targets))])
-        
