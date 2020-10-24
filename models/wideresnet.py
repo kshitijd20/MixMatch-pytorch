@@ -76,7 +76,7 @@ class WideResNet(nn.Module):
                 nn.init.xavier_normal_(m.weight.data)
                 m.bias.data.zero_()
 
-    def forward(self, x):
+    def forward(self, x, return_features=False):
         out = self.conv1(x)
         out = self.block1(out)
         out = self.block2(out)
@@ -84,4 +84,6 @@ class WideResNet(nn.Module):
         out = self.relu(self.bn1(out))
         out = F.avg_pool2d(out, 8)
         out = out.view(-1, self.nChannels)
+        if return_features:
+            return out, self.fc(out)
         return self.fc(out)
