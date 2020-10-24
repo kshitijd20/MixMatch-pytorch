@@ -31,6 +31,23 @@ Train the model by 4000 labeled data of CIFAR-10 dataset:
 python train.py --gpu <gpu_id> --n-labeled 4000 --out cifar10@4000
 ```
 
+### Train on super classes (simple grouping)
+Train the model by 625 labeled data of CIFAR-4 dataset:
+```
+python train_cifar4.py --gpu <gpu_id> --n-labeled 625 --out cifar10@625
+```
+
+### Train on super classes (kmeans grouping)
+Extract features and apply k-means to obtain 4 super-classes
+```
+python find_clusters.py --gpu <gpu_id>
+```
+
+Train the model by 625 labeled data of CIFAR-4 dataset:
+```
+python train_cifar4_kmeans.py --gpu <gpu_id> --n-labeled 625 --out cifar10@625
+```
+
 ### Monitoring training progress
 ```
 tensorboard.sh --port 6006 --logdir cifar10@250
